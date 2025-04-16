@@ -26,6 +26,7 @@
       text-align: center;
       font-size: 3em;
       opacity: 0;
+      white-space: nowrap;
     }
     /* Main screen styling */
     #main-screen {
@@ -41,12 +42,14 @@
     #main-screen h1 {
       text-align: center;
       margin-bottom: 30px;
+      font-size: 2.5em;
     }
     .panel {
       border: 1px solid #00FF00;
       padding: 20px;
       margin: 10px 0;
       background-color: #222;
+      border-radius: 5px;
     }
     .panel-buttons {
       text-align: center;
@@ -57,9 +60,10 @@
       border: 1px solid #00FF00;
       color: #00FF00;
       padding: 10px 20px;
-      margin: 0 5px;
+      margin: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
+      font-size: 1em;
     }
     .panel-buttons button:hover {
       background-color: #00FF00;
@@ -70,16 +74,33 @@
       background-color: #000;
       border: 2px solid #00FF00;
       padding: 10px;
-      font-size: 0.9em;
+      font-size: 1em;
       height: 200px;
-      overflow-y: auto; 
+      overflow-y: auto;
       white-space: pre-wrap;
+    }
+    /* Responsive Styles */
+    @media (max-width: 600px) {
+      #intro {
+        font-size: 2em;
+      }
+      #main-screen h1 {
+        font-size: 2em;
+      }
+      .panel-buttons button {
+        padding: 8px 16px;
+        font-size: 0.9em;
+      }
+      #terminal {
+        font-size: 0.9em;
+        height: 150px;
+      }
     }
   </style>
 </head>
 <body>
   <!-- Intro Screen -->
-  <div id="intro">Welcome, Isaac</div>
+  <div id="intro"></div>
   
   <!-- Main Screen -->
   <div id="main-screen">
@@ -88,7 +109,7 @@
       <div class="panel-buttons">
         <button onclick="simulateCommand()">Run Terminal</button>
         <button onclick="clearTerminal()">Clear Terminal</button>
-        <button onclick="simulateCommand(true)">Random Hack</button>
+        <button onclick="simulateDNS()">DNS</button>
       </div>
       <div id="terminal"></div>
     </div>
@@ -116,22 +137,11 @@
     
     // Start the intro effect when the page loads
     window.onload = function() {
-      // Fade in and type out effect
-      intro.style.opacity = 0;
-      // Fade in the intro div with a simple opacity transition
-      let opacity = 0;
-      const fadeIn = setInterval(() => {
-        opacity += 0.05;
-        intro.style.opacity = opacity;
-        if(opacity >= 1) {
-          clearInterval(fadeIn);
-          // Start typewriter effect
-          typeWriter("Welcome, Isaac", intro, 100, () => {
-            // After complete and 3 second delay, fade out and show main screen
-            setTimeout(transitionToMain, 3000);
-          });
-        }
-      }, 50);
+      // Start typewriter effect with "Welcome back, Isaac"
+      typeWriter("Welcome back, Isaac", intro, 100, () => {
+          // After complete and 3 second delay, transition to main screen
+          setTimeout(transitionToMain, 3000);
+      });
     };
     
     function transitionToMain() {
@@ -172,27 +182,42 @@
       "Exiting terminal mode..."
     ];
     
-    // Function to simulate terminal output with random commands
-    function simulateCommand(random=false) {
+    // Function to simulate terminal output with sequential commands
+    function simulateCommand() {
       clearTerminal();
       let index = 0;
       
       function addLine() {
-        // If random is true, pick a random command each time
-        let line = random 
-          ? commands[Math.floor(Math.random() * commands.length)] 
-          : (commands[index] || "");
-        if(line !== "") {
-          terminal.innerHTML += line + "\n";
+        if (index < commands.length) {
+          terminal.innerHTML += commands[index] + "\n";
           terminal.scrollTop = terminal.scrollHeight;
-        }
-        index++;
-        if(index < commands.length || random) {
-          // Continue to add a command every 500ms
-          setTimeout(addLine, random ? 700 : 500);
+          index++;
+          setTimeout(addLine, 500);
         }
       }
       addLine();
+    }
+    
+    // A separate simulation for DNS button can output DNS related messages
+    function simulateDNS() {
+      clearTerminal();
+      const dnsCommands = [
+        "Running DNS lookup for target...",
+        "Querying root servers...",
+        "Retrieved NS records...",
+        "Resolving domain to IP...",
+        "DNS cache updated."
+      ];
+      let index = 0;
+      function addDNSLine() {
+        if (index < dnsCommands.length) {
+          terminal.innerHTML += dnsCommands[index] + "\n";
+          terminal.scrollTop = terminal.scrollHeight;
+          index++;
+          setTimeout(addDNSLine, 600);
+        }
+      }
+      addDNSLine();
     }
     
     // Function to clear terminal output
