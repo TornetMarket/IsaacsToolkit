@@ -12,7 +12,7 @@
       background-color: #111;
       color: #00FF00;
       font-family: 'Courier New', Courier, monospace;
-      overflow: hidden;
+      overflow: auto;
     }
     .hidden {
       display: none;
@@ -78,6 +78,12 @@
       height: 200px;
       overflow-y: auto;
       white-space: pre-wrap;
+      margin-bottom: 20px;
+    }
+    /* Extra buttons container */
+    #extra-buttons {
+      text-align: center;
+      margin-top: 10px;
     }
     /* Responsive Styles */
     @media (max-width: 600px) {
@@ -110,8 +116,10 @@
         <button onclick="simulateCommand()">Run Terminal</button>
         <button onclick="clearTerminal()">Clear Terminal</button>
         <button onclick="simulateDNS()">DNS</button>
+        <button onclick="simulateLocateDNS()">Locate DNS</button>
       </div>
       <div id="terminal"></div>
+      <div id="extra-buttons"></div>
     </div>
   </div>
 
@@ -119,7 +127,7 @@
     /*********** Intro Animation ***********/
     const intro = document.getElementById('intro');
     const mainScreen = document.getElementById('main-screen');
-    
+
     // Function to simulate typewriter effect
     function typeWriter(text, element, speed, callback) {
       let i = 0;
@@ -137,29 +145,25 @@
     
     // Start the intro effect when the page loads
     window.onload = function() {
-      // Start typewriter effect with "Welcome back, Isaac"
       typeWriter("Welcome back, Isaac", intro, 100, () => {
-          // After complete and 3 second delay, transition to main screen
           setTimeout(transitionToMain, 3000);
       });
     };
     
     function transitionToMain() {
-      // Fade out the intro div
       let opacity = 1;
       const fadeOut = setInterval(() => {
         opacity -= 0.05;
         intro.style.opacity = opacity;
-        if(opacity <= 0) {
+        if (opacity <= 0) {
           clearInterval(fadeOut);
           intro.style.display = 'none';
-          // Now show the main screen with a fade in effect
           mainScreen.style.display = 'block';
           let mainOpacity = 0;
           const mainFadeIn = setInterval(() => {
             mainOpacity += 0.05;
             mainScreen.style.opacity = mainOpacity;
-            if(mainOpacity >= 1) clearInterval(mainFadeIn);
+            if (mainOpacity >= 1) clearInterval(mainFadeIn);
           }, 50);
         }
       }, 50);
@@ -167,7 +171,8 @@
     
     /*********** Terminal Simulation ***********/
     const terminal = document.getElementById('terminal');
-    
+    const extraButtons = document.getElementById('extra-buttons');
+
     // Array of sample terminal commands and hacker terms
     const commands = [
       "Initializing hack protocol...",
@@ -185,8 +190,8 @@
     // Function to simulate terminal output with sequential commands
     function simulateCommand() {
       clearTerminal();
+      clearExtraButtons();
       let index = 0;
-      
       function addLine() {
         if (index < commands.length) {
           terminal.innerHTML += commands[index] + "\n";
@@ -198,9 +203,10 @@
       addLine();
     }
     
-    // A separate simulation for DNS button can output DNS related messages
+    // A simulation for DNS button with DNS related messages
     function simulateDNS() {
       clearTerminal();
+      clearExtraButtons();
       const dnsCommands = [
         "Running DNS lookup for target...",
         "Querying root servers...",
@@ -220,9 +226,50 @@
       addDNSLine();
     }
     
+    // Function to simulate Locate DNS sequence
+    function simulateLocateDNS() {
+      clearTerminal();
+      clearExtraButtons();
+      const locateCommands = [
+        "Locating DNS record for target...",
+        "Querying specialized DNS servers...",
+        "Analyzing response packets...",
+        "Retrieving location data..."
+      ];
+      let index = 0;
+      function addLocateLine() {
+        if (index < locateCommands.length) {
+          terminal.innerHTML += locateCommands[index] + "\n";
+          terminal.scrollTop = terminal.scrollHeight;
+          index++;
+          setTimeout(addLocateLine, 600);
+        } else {
+          // After running the sequence, display the final message
+          terminal.innerHTML += "Located school under DNS: Millard Mccollam Elementary School\n";
+          terminal.scrollTop = terminal.scrollHeight;
+          // After 2 seconds add the extra buttons
+          setTimeout(addExtraButtons, 2000);
+        }
+      }
+      addLocateLine();
+    }
+    
     // Function to clear terminal output
     function clearTerminal() {
       terminal.innerHTML = "";
+    }
+    
+    // Function to clear extra buttons container
+    function clearExtraButtons() {
+      extraButtons.innerHTML = "";
+    }
+    
+    // Function to dynamically add extra buttons for showcase purposes
+    function addExtraButtons() {
+      extraButtons.innerHTML = `
+        <button onclick="alert('DDoS Wifi executed (simulation)!')">DDoS Wifi</button>
+        <button onclick="alert('Hack Chromebooks executed (simulation)!')">Hack Chromebooks</button>
+      `;
     }
   </script>
 </body>
