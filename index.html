@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Isaac's Toolkit</title>
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #111;
+      color: #00FF00;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
+    .hidden {
+      display: none;
+    }
+    /* Intro screen styling */
+    #intro {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 3em;
+      opacity: 0;
+    }
+    /* Main screen styling */
+    #main-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+      display: none;
+    }
+    #main-screen h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .panel {
+      border: 1px solid #00FF00;
+      padding: 20px;
+      margin: 10px 0;
+      background-color: #222;
+    }
+    .panel-buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .panel-buttons button {
+      background-color: #111;
+      border: 1px solid #00FF00;
+      color: #00FF00;
+      padding: 10px 20px;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .panel-buttons button:hover {
+      background-color: #00FF00;
+      color: #111;
+    }
+    /* Terminal window styling */
+    #terminal {
+      background-color: #000;
+      border: 2px solid #00FF00;
+      padding: 10px;
+      font-size: 0.9em;
+      height: 200px;
+      overflow-y: auto; 
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro Screen -->
+  <div id="intro">Welcome, Isaac</div>
+  
+  <!-- Main Screen -->
+  <div id="main-screen">
+    <h1>Isaac's Toolkit</h1>
+    <div class="panel">
+      <div class="panel-buttons">
+        <button onclick="simulateCommand()">Run Terminal</button>
+        <button onclick="clearTerminal()">Clear Terminal</button>
+        <button onclick="simulateCommand(true)">Random Hack</button>
+      </div>
+      <div id="terminal"></div>
+    </div>
+  </div>
+
+  <script>
+    /*********** Intro Animation ***********/
+    const intro = document.getElementById('intro');
+    const mainScreen = document.getElementById('main-screen');
+    
+    // Function to simulate typewriter effect
+    function typeWriter(text, element, speed, callback) {
+      let i = 0;
+      element.textContent = "";
+      element.style.opacity = 1;
+      const interval = setInterval(() => {
+        element.textContent += text.charAt(i);
+        i++;
+        if (i >= text.length) {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, speed);
+    }
+    
+    // Start the intro effect when the page loads
+    window.onload = function() {
+      // Fade in and type out effect
+      intro.style.opacity = 0;
+      // Fade in the intro div with a simple opacity transition
+      let opacity = 0;
+      const fadeIn = setInterval(() => {
+        opacity += 0.05;
+        intro.style.opacity = opacity;
+        if(opacity >= 1) {
+          clearInterval(fadeIn);
+          // Start typewriter effect
+          typeWriter("Welcome, Isaac", intro, 100, () => {
+            // After complete and 3 second delay, fade out and show main screen
+            setTimeout(transitionToMain, 3000);
+          });
+        }
+      }, 50);
+    };
+    
+    function transitionToMain() {
+      // Fade out the intro div
+      let opacity = 1;
+      const fadeOut = setInterval(() => {
+        opacity -= 0.05;
+        intro.style.opacity = opacity;
+        if(opacity <= 0) {
+          clearInterval(fadeOut);
+          intro.style.display = 'none';
+          // Now show the main screen with a fade in effect
+          mainScreen.style.display = 'block';
+          let mainOpacity = 0;
+          const mainFadeIn = setInterval(() => {
+            mainOpacity += 0.05;
+            mainScreen.style.opacity = mainOpacity;
+            if(mainOpacity >= 1) clearInterval(mainFadeIn);
+          }, 50);
+        }
+      }, 50);
+    }
+    
+    /*********** Terminal Simulation ***********/
+    const terminal = document.getElementById('terminal');
+    
+    // Array of sample terminal commands and hacker terms
+    const commands = [
+      "Initializing hack protocol...",
+      "Establishing secure connection...",
+      "Bypassing firewall...",
+      "Accessing mainframe system...",
+      "Decrypting secured files...",
+      "Data packet intercepted.",
+      "Brute force attack in progress...",
+      "Uploading payload...",
+      "System override complete.",
+      "Exiting terminal mode..."
+    ];
+    
+    // Function to simulate terminal output with random commands
+    function simulateCommand(random=false) {
+      clearTerminal();
+      let index = 0;
+      
+      function addLine() {
+        // If random is true, pick a random command each time
+        let line = random 
+          ? commands[Math.floor(Math.random() * commands.length)] 
+          : (commands[index] || "");
+        if(line !== "") {
+          terminal.innerHTML += line + "\n";
+          terminal.scrollTop = terminal.scrollHeight;
+        }
+        index++;
+        if(index < commands.length || random) {
+          // Continue to add a command every 500ms
+          setTimeout(addLine, random ? 700 : 500);
+        }
+      }
+      addLine();
+    }
+    
+    // Function to clear terminal output
+    function clearTerminal() {
+      terminal.innerHTML = "";
+    }
+  </script>
+</body>
+</html>
